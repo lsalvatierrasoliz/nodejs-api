@@ -1,0 +1,19 @@
+{
+    "application" : {
+        "port" : 3000,        
+        "logger":{
+            "appenders": {
+                "out" : { "type": "stdout"},
+                "app" : {"type": "file", "filename": "app.log", "maxLogSize": 5097152}    
+        
+            },
+            "categories" : {
+                "default": { 
+                    "appenders" : ["out", "app"],
+                    "level":"debug"
+                }
+            }                            
+        }
+    }
+
+}

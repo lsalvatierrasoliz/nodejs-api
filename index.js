@@ -4,9 +4,11 @@ import bodyParser from 'body-parser';
 import routesStudent from './src/routes/student.routes';
 import routesCourse from './src/routes/course.routes';
 import routesRegistration from './src/routes/courseRegistration.route';
+import config from './src/config/config';
+
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || config.application.port;
 
 
 // mongoose connection
@@ -18,6 +20,12 @@ mongoose.connect('mongodb://localhost:27017/universityDB', {
 
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
+// handler errors
+app.use((err, req, res, next) => {  
+  if (!err.statusCode) err.statusCode = 500;
+  res.status(err.statusCode).send(err.message);
+});
+
 
 // routes init
 routesStudent(app);
