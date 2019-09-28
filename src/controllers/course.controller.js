@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
 import {CourseSchema} from '../models/course.model';
+import {CourseRegistrationSchema} from '../models/courseRegistration.model';
+
 
 const Course = mongoose.model('Course', CourseSchema);
+const CourseRegistration = mongoose.model('CourseRegistration', CourseRegistrationSchema);
 
 export const addNewCourse = (req, res) => {
     let newCourse = new Course(req.body);
@@ -26,17 +29,11 @@ export const getCourses = (req, res) => {
 };
 
 export const getCoursetWithId = (req, res) => {
-    Course.findById(req.params.courseId, (err, course) => {
-        if(err){
-            res.status(400).send(err);
-        }
-
-        res.status(200).json(course);
-    });
+    res.status(200).json(req.course);
 };
 
 export const updateCourse = (req, res) => {
-    Student.findOneAndUpdate({_id: req.params.courseId}, 
+    Course.findOneAndUpdate({_id: req.params.code}, 
         req.body, {new : true},
         (err, course) => {
             if(err){
@@ -46,6 +43,39 @@ export const updateCourse = (req, res) => {
             res.status(201).json(course);
         });
 };
+
+export const getByCourseCode = (req, res, next, code) => {
+    Course.findOne({code:code}, (err, course) => {
+        if(err){
+            res.send(err);
+        }
+
+        req.course = course;
+        next();
+    });
+};
+
+export const getStudentsByCourse = (req, res) => {
+       
+    CourseRegistration.find({course: req.course._id})
+    .populate('student')
+    .exec((err, registrations) => {
+        if(err){
+            res.status(400).send(err);
+        }
+
+        let dataResult = {
+            course : req.course,
+            students : []
+        };
+        registrations.forEach(function(registration) {            
+            dataResult.students.push(registration.student);            
+        });        
+        res.status(200).json(dataResult);
+    });
+}
+
+
 
 
 

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-export const StudentSchema = new Schema({
+const StudentSchema = new Schema({
     firstName : {
         type: String,
         required: 'Enter first name'
@@ -16,4 +16,6 @@ export const StudentSchema = new Schema({
         default: Date.now
     }
 });
+
+module.exports = mongoose.model('Student', StudentSchema);
 
