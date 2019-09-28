@@ -47,11 +47,18 @@ export const updateCourse = (req, res) => {
 export const getByCourseCode = (req, res, next, code) => {
     Course.findOne({code:code}, (err, course) => {
         if(err){
-            res.send(err);
+            next(err);
+        }
+
+        if(!course){
+            const err = new Error("Course not found");
+            err.status = 404;
+            next(err);
         }
 
         req.course = course;
         next();
+
     });
 };
 
@@ -73,7 +80,21 @@ export const getStudentsByCourse = (req, res) => {
         });        
         res.status(200).json(dataResult);
     });
-}
+};
+
+export const deleteStudentFromCourse = (req, res) => {
+    CourseRegistration.deleteOne({course: req.course._id, student:req.params.studentId}, (err) => {
+        if(err){
+            res.status(400).send(err);
+        }
+
+        res.status(204).send({
+            operation : 'successfully deleted'
+        });
+    });
+};
+
+
 
 
 

@@ -48,7 +48,13 @@ export const updateStudent = (req, res) => {
 export const getByStudentId = (req, res, next, studentId) => {
     Student.findById(studentId, (err, student) => {
         if(err){
-            res.status(400).send(err);
+            next(err);             
+        }
+
+        if(!student){
+            const err = new Error("Student not found");
+            err.status = 404;
+            next(err);            
         }
 
         req.student = student;

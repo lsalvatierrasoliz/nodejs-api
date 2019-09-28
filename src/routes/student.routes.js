@@ -19,7 +19,7 @@ const routes = (app) => {
 
     app.route('/api/v1/students/:studentId/courses')
     .get(getCoursesByStudent);
-
+ 
     app.param('studentId', getByStudentId);
 
 }
